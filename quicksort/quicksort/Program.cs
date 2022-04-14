@@ -1,7 +1,10 @@
 ﻿using System.Diagnostics;
 using System.Linq;
 
-var data = new int[] {2, 5, 9, 12, 3, 0, 18, 1, -1};
+var data = new int[] {2, 5, 9, 12, 3, 0, 18, 1, -1, -11, 4, 7, 88, -15, 60, 100, 45, 23, -23, 17, 11, 13, -13, 25, -25, 77, -77, 36, -36, 43, -43};
+//RandomDataGenerator(){
+
+//}
 
 Console.WriteLine("Data not sorted: ");
 for (int i = 0; i < data.Length; i++)
@@ -19,13 +22,34 @@ Console.WriteLine();
 
 Stopwatch stopwatch = new Stopwatch();
 
-#region v1
+#region sorting
+
+stopwatch.Start();
+
+Console.WriteLine($"\nData {nameof(SelectionSort)}: ");
+var sorted = SelectionSort(data);
+for (int i = 0; i < sorted.Length; i++)
+{
+    if (i == 0)
+    {
+        Console.Write(sorted[i]);
+        continue;
+    }
+
+    Console.Write(", " + sorted[i]);
+}
+
+stopwatch.Stop();
+Console.WriteLine("\nElapsed Time is {0} ms", stopwatch.ElapsedMilliseconds);
+
+#endregion
+
+#region quicksorting v1
 
 stopwatch.Start();
 
 Console.WriteLine($"\nData {nameof(QuickSort1)}: ");
-var quicksorted = new int[data.Length];
-quicksorted = QuickSort1(data);
+var quicksorted = QuickSort1(data);
 for (int i = 0; i < quicksorted.Length; i++)
 {
     if (i == 0)
@@ -42,7 +66,7 @@ Console.WriteLine("\nElapsed Time is {0} ms", stopwatch.ElapsedMilliseconds);
 
 #endregion
 
-#region v2
+#region quicksorting v2
 
 stopwatch = new Stopwatch();
 stopwatch.Start();
@@ -64,6 +88,39 @@ stopwatch.Stop();
 Console.WriteLine("\nElapsed Time is {0} ms", stopwatch.ElapsedMilliseconds);
 
 #endregion
+
+#region methods
+
+int[] SelectionSort(int[] arr)
+{
+    int[] newArr = new int[arr.Length];
+    int cycles = arr.Length;
+
+    for (int i = 0; i < cycles; i++)
+    {
+        int smallestIndex = FindSmallest(arr);
+        newArr[i] = arr[smallestIndex];
+        arr = arr.Except(new int[] { arr[smallestIndex] }).ToArray();
+    }
+
+    return newArr;
+}
+
+int FindSmallest(int[] arr)
+{
+    //ipotesi
+    int smallestIndex = 0;
+
+    for (int i = 1; i < arr.Length; i++)
+    {
+        if (arr[i] < arr[smallestIndex])
+        {
+            smallestIndex = i;
+        }
+    }
+
+    return smallestIndex;
+}
 
 int[] QuickSort1(int[] data)
 {
@@ -183,3 +240,5 @@ static int Partition(int[] arr, int left, int right)
         }
     }
 }
+
+#endregion
