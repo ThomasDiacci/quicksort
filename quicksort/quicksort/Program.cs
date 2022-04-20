@@ -2,6 +2,7 @@
 using System.Linq;
 
 var data = new int[] {2, 5, 9, 12, 3, 0, 18, 1, -1, -11, 4, 7, 88, -15, 60, 100, 45, 23, -23, 17, 11, 13, -13, 25, -25, 77, -77, 36, -36, 43, -43};
+//{2, 5, ... 45, ... 100, 60}
 //RandomDataGenerator(){
 
 //}
@@ -19,6 +20,9 @@ for (int i = 0; i < data.Length; i++)
 }
 
 Console.WriteLine();
+
+//pausa per avere una performance temporale più accurata
+Thread.Sleep(5000);
 
 Stopwatch stopwatch = new Stopwatch();
 
@@ -66,13 +70,38 @@ Console.WriteLine("\nElapsed Time is {0} ms", stopwatch.ElapsedMilliseconds);
 
 #endregion
 
-#region quicksorting v2
+#region orderby v2
 
 stopwatch = new Stopwatch();
 stopwatch.Start();
 
-Console.WriteLine($"\nData {nameof(QuickSort2)}: ");
-QuickSort2(data, 0, data.Length - 1);
+Console.WriteLine($"\nData Orderby Linq: ");
+var linqsorted = data.ToList().OrderBy(x => x).ToArray();
+for (int i = 0; i < linqsorted.Length; i++)
+{
+    if (i == 0)
+    {
+        Console.Write(linqsorted[i]);
+        continue;
+    }
+
+    Console.Write(", " + linqsorted[i]);
+}
+
+stopwatch.Stop();
+Console.WriteLine("\nElapsed Time is {0} ms", stopwatch.ElapsedMilliseconds);
+
+#endregion
+
+//NB: arriva già sorted dal metodo precedente
+
+#region quicksorting v3
+
+stopwatch = new Stopwatch();
+stopwatch.Start();
+
+Console.WriteLine($"\nData {nameof(QuickSort3)}: ");
+QuickSort3(data, 0, data.Length - 1);
 for (int i = 0; i < data.Length; i++)
 {
     if (i == 0)
@@ -126,12 +155,13 @@ int[] QuickSort1(int[] data)
 {
     //base case
     //perché un array con 0 o 1 elemento è già di per sè ordinata
+    //{} {1}
     if (data.Length < 2)
     {
         return data;
     }
 
-    //prendo l'elemento centrale come pivot, per cadere nel caso medio di O(n*log(n))
+    //prendo l'elemento centrale come pivot, per cadere nel caso medio di O(n*log(n)) = O(n) * O(log(n))
     //NB: int arrotonda per difetto
     var pivot = data[data.Length / 2];
 
@@ -173,11 +203,11 @@ int[] QuickSort1(int[] data)
     //allData.Concat(greater);
 
     //return allData;
-
+    //return QuickSort1(subLesser) + [pivot] + QuickSort1(subGreater)
     return QuickSort1(subLesser.ToArray()).Concat(new int[] { pivot }).Concat(QuickSort1(subGreater.ToArray())).ToArray();
 }
 
-static void QuickSort2(int[] arr, int left, int right)
+static void QuickSort3(int[] arr, int left, int right)
 {
     int pivot;
     //base case
@@ -191,11 +221,11 @@ static void QuickSort2(int[] arr, int left, int right)
         //pivot = 2
         if (pivot > 1)
         {
-            QuickSort2(arr, left, pivot - 1);
+            QuickSort3(arr, left, pivot - 1);
         }
         if (pivot + 1 < right)
         {
-            QuickSort2(arr, pivot + 1, right);
+            QuickSort3(arr, pivot + 1, right);
         }
     }
 }
